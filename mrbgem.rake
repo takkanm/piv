@@ -7,4 +7,5 @@ MRuby::Gem::Specification.new('piv') do |spec|
   spec.add_dependency 'mruby-print', :core => 'mruby-print'
   spec.add_dependency 'mruby-mtest', :mgem => 'mruby-mtest'
   spec.add_dependency 'mruby-io',    :mgem => 'mruby-io'
+  spec.add_dependency 'mruby-simplehttp', :mgem => 'mruby-simplehttp'
 end
