@@ -1,12 +1,22 @@
+class PivConfig
+  def initialize(config_file_path = './.piv.json')
+    File.open(config_file_path) do |fp|
+      body = fp.read.chomp
+      @config = JSON.parse(body)
+    end
+  end
+
+  def [](key)
+    @config[key]
+  end
+end
+
 def __main__(argv)
   if argv[1] == "version"
     puts "v#{Piv::VERSION}"
   else
-    url = ''
-    File.open('./.piv') do |fp|
-      url = fp.read.chomp
-    end
-    p url
-    p SimpleHttp.new("http", url, 80).request("GET", "/", {'User-Agent' => "test-agent"})
+    config = PivConfig.new
+    p config
+    p SimpleHttp.new("http", config['url'], 80).request("GET", "/", {'User-Agent' => "test-agent"})
   end
 end
