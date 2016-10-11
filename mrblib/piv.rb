@@ -17,6 +17,6 @@ def __main__(argv)
   else
     config = PivConfig.new
     p config
-    p SimpleHttp.new("http", config['url'], 80).request("GET", "/", {'User-Agent' => "test-agent"})
+    p SimpleHttp.new("https", config['url']).request("GET", "/", {'User-Agent' => "test-agent"})
   end
 end
