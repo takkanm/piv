@@ -8,6 +8,10 @@ class PivConfig
     @config[key]
   end
 
+  def []=(key, val)
+    @config[key] = val
+  end
+
   def load_config!
     File.open(@config_file_path) do |fp|
       body = fp.read.chomp
@@ -47,9 +51,29 @@ class PivotalTrackerApiClient
   end
 end
 
+class Command
+  class Init
+    def execute
+      print 'ProjectId: '
+      project_id = gets.chomp
+      print 'AccessToken: '
+      token = gets.chomp
+      config = PivConfig.new
+      config['project_id'] = project_id
+      config['token'] = token
+      config.save!
+
+      puts 'create piv.json'
+    end
+  end
+end
+
 def __main__(argv)
-  if argv[1] == "version"
+  case argv[1]
+  when 'version'
     puts "v#{Piv::VERSION}"
+  when 'init'
+    Command::Init.new.execute!
   else
     config = PivConfig.new
     config.save!
