@@ -38,6 +38,10 @@ class PivotalTrackerApiClient
     get('/services/v5/me')
   end
 
+  def stories
+    get("/services/v5/projects/#{@project_id}/stories?with_state=started")
+  end
+
   def get(path, header = {})
     client.request('GET', path, header.merge(default_header)).body
   end
@@ -53,7 +57,7 @@ end
 
 class Command
   class Init
-    def execute
+    def execute!
       print 'ProjectId: '
       project_id = gets.chomp
       print 'AccessToken: '
@@ -66,6 +70,16 @@ class Command
       puts 'create piv.json'
     end
   end
+
+  class Started
+    def execute!
+      config = PivConfig.new
+      client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
+      JSON.parse(client.stories).each do |story|
+        puts story['name']
+      end
+    end
+  end
 end
 
 def __main__(argv)
@@ -74,6 +88,8 @@ def __main__(argv)
     puts "v#{Piv::VERSION}"
   when 'init'
     Command::Init.new.execute!
+  when 'started'
+    Command::Started.new.execute!
   else
     config = PivConfig.new
     config.save!
