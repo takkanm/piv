@@ -1,13 +1,24 @@
 class PivConfig
   def initialize(config_file_path = './.piv.json')
-    File.open(config_file_path) do |fp|
+    @config_file_path = config_file_path
+    load_config!
+  end
+
+  def [](key)
+    @config[key]
+  end
+
+  def load_config!
+    File.open(@config_file_path) do |fp|
       body = fp.read.chomp
       @config = JSON.parse(body)
     end
   end
 
-  def [](key)
-    @config[key]
+  def save!
+    File.open(@config_file_path, 'w') do |fp|
+      fp.puts JSON.stringify(@config)
+    end
   end
 end
 
@@ -41,6 +52,7 @@ def __main__(argv)
     puts "v#{Piv::VERSION}"
   else
     config = PivConfig.new
+    config.save!
     client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
     p client.me
   end
