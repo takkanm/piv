@@ -76,7 +76,7 @@ class Command
       config = PivConfig.new
       client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
       JSON.parse(client.stories).each do |story|
-        puts story['name']
+        puts [('%12d' % story['id']), story['name']].join(' : ')
       end
     end
   end
