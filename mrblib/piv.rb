@@ -59,7 +59,30 @@ class PivotalTrackerApiClient
 end
 
 class Command
-  class Init
+  class Base
+    def initialize(args)
+      parse_option args
+      @help = args.any? {|arg| ['--help', '-h'].include?(arg) }
+    end
+
+    def run!
+      if @help
+        show_help
+      else
+        execute!
+      end
+    end
+
+    def show_help
+      puts help_text
+    end
+
+    def help_text
+      ''
+    end
+  end
+
+  class Init < Command::Base
     def execute!
       print 'ProjectId: '
       project_id = gets.chomp
@@ -74,8 +97,8 @@ class Command
     end
   end
 
-  class Started
-    def initialize(args)
+  class Started < Command::Base
+    def parse_option(args)
       @only_me = args.any? {|arg| arg == '--only-me' }
     end
 
@@ -85,6 +108,16 @@ class Command
 
         puts [('%12d' % story['id']), story['name']].join(' : ')
       end
+    end
+
+    def help_text
+      <<-EOS
+usage: piv started [--only-me] [--help] [-h]
+
+Show started stories.
+
+  --only-me : show only my stories
+      EOS
     end
 
     private
@@ -107,9 +140,9 @@ def __main__(argv)
   when 'version'
     puts "v#{Piv::VERSION}"
   when 'init'
-    Command::Init.new.execute!
+    Command::Init.new(arg[2..-1]).run!
   when 'started'
-    Command::Started.new(argv[2..-1]).execute!
+    Command::Started.new(argv[2..-1]).run!
   else
     config = PivConfig.new
     config.save!
