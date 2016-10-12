@@ -38,8 +38,11 @@ class PivotalTrackerApiClient
     get('/services/v5/me')
   end
 
-  def stories
-    get("/services/v5/projects/#{@project_id}/stories?with_state=started")
+  def stories(query = {})
+    path = "/services/v5/projects/#{@project_id}/stories"
+    path = [path, query.map {|k,v| "#{k}=#{v}" }.join('&')].join('?')
+
+    get(path)
   end
 
   def get(path, header = {})
@@ -72,12 +75,29 @@ class Command
   end
 
   class Started
+    def initialize(args)
+      @only_me = args.any? {|arg| arg == '--only-me' }
+    end
+
     def execute!
-      config = PivConfig.new
-      client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
-      JSON.parse(client.stories).each do |story|
+      JSON.parse(client.stories(with_state: 'started')).each do |story|
+        next if @only_me && !story['owner_ids'].include?(my_id)
+
         puts [('%12d' % story['id']), story['name']].join(' : ')
       end
+    end
+
+    private
+
+    def my_id
+      @my_id ||= client.me['id']
+    end
+
+    def client
+      return @client if @client
+
+      config  = PivConfig.new
+      @client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
     end
   end
 end
@@ -89,7 +109,7 @@ def __main__(argv)
   when 'init'
     Command::Init.new.execute!
   when 'started'
-    Command::Started.new.execute!
+    Command::Started.new(argv[2..-1]).execute!
   else
     config = PivConfig.new
     config.save!
