@@ -39,6 +39,10 @@ module Piv
       get('/services/v5/me')
     end
 
+    def memberships
+      get("/services/v5/projects/#{@project_id}/memberships")
+    end
+
     def stories(query = {})
       path = "/services/v5/projects/#{@project_id}/stories"
       path = [path, query.map {|k,v| "#{k}=#{v}" }.join('&')].join('?')
@@ -107,7 +111,7 @@ module Piv
         JSON.parse(client.stories(with_state: 'started')).each do |story|
           next if @only_me && !story['owner_ids'].include?(my_id)
 
-          puts [('%12d' % story['id']), story['name']].join(' : ')
+          puts "#{('%12d' % story['id'])} : #{story['name']} [#{member_names(story['owner_ids']).join(',')}]"
         end
       end
 
@@ -132,6 +136,18 @@ module Piv
 
         config  = Piv::Config.new
         @client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
+      end
+
+      def member_names(owner_ids)
+        owner_ids.map do |owner_id|
+          owner = memberships.find { |o| o['person']['id'] == owner_id }
+
+          owner['person']['username']
+        end
+      end
+
+      def memberships
+        @memberships ||= JSON.parse(@client.memberships)
       end
     end
   end
