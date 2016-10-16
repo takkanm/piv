@@ -28,7 +28,8 @@ module Piv
   end
 
   class PivotalTrackerApiClient
-    API_HOST = 'www.pivotaltracker.com'
+    API_HOST  = 'www.pivotaltracker.com'
+    PATH_BASE = '/services/v5'
 
     def initialize(project_id, token)
       @token = token
@@ -36,22 +37,22 @@ module Piv
     end
 
     def me
-      get('/services/v5/me')
+      get('/me')
     end
 
     def memberships
-      get("/services/v5/projects/#{@project_id}/memberships")
+      get("/projects/#{@project_id}/memberships")
     end
 
     def stories(query = {})
-      path = "/services/v5/projects/#{@project_id}/stories"
+      path = "/projects/#{@project_id}/stories"
       path = [path, query.map {|k,v| "#{k}=#{v}" }.join('&')].join('?')
 
       get(path)
     end
 
     def get(path, header = {})
-      client.request('GET', path, header.merge(default_header)).body
+      client.request('GET', [PATH_BASE, path].join('/'), header.merge(default_header)).body
     end
 
     def default_header
