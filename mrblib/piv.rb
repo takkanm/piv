@@ -51,6 +51,10 @@ module Piv
       get(path)
     end
 
+    def story(story_id)
+      get("/projects/#{@project_id}/stories/#{story_id}")
+    end
+
     def get(path, header = {})
       client.request('GET', [PATH_BASE, path].join('/'), header.merge(default_header)).body
     end
@@ -67,6 +71,7 @@ module Piv
   class Command
     class Base
       def initialize(args)
+        @args = args
         parse_option args
         @help = args.any? {|arg| ['--help', '-h'].include?(arg) }
       end
@@ -85,6 +90,16 @@ module Piv
 
       def help_text
         ''
+      end
+
+      def parse_option(args)
+      end
+
+      def client
+        return @client if @client
+
+        config  = Piv::Config.new
+        @client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
       end
     end
 
@@ -129,14 +144,7 @@ module Piv
       private
 
       def my_id
-        @my_id ||= client.me['id']
-      end
-
-      def client
-        return @client if @client
-
-        config  = Piv::Config.new
-        @client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
+        @my_id ||= JSON.parse(client.me)['id']
       end
 
       def member_names(owner_ids)
@@ -151,6 +159,14 @@ module Piv
         @memberships ||= JSON.parse(@client.memberships)
       end
     end
+
+    class Show < Base
+      def execute!
+        story = JSON.parse(client.story(@args[0]))
+        puts story['name']
+        puts story['description']
+      end
+    end
   end
 end
 
@@ -162,6 +178,8 @@ def __main__(argv)
     Piv::Command::Init.new(arg[2..-1]).run!
   when 'started'
     Piv::Command::Started.new(argv[2..-1]).run!
+  when 'show'
+    Piv::Command::Show.new(argv[2..-1]).run!
   else
     config = Piv::Config.new
     config.save!
