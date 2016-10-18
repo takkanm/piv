@@ -11,4 +11,5 @@ MRuby::Gem::Specification.new('piv') do |spec|
   spec.add_dependency 'mruby-polarssl', :github => 'luisbebop/mruby-polarssl'
   spec.add_dependency 'mruby-simplehttp', :github => 'matsumoto-r/mruby-simplehttp'
   spec.add_dependency 'mruby-json', :mgem => 'mruby-json'
+  spec.add_dependency 'mruby-exec', :github => 'haconiwa/mruby-exec'
 end

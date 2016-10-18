@@ -167,6 +167,23 @@ module Piv
         puts story['description']
       end
     end
+
+    class Branch < Base
+      def initialize(args)
+        @story_id    = args[0]
+        @branch_name = args[1]
+
+        super(args)
+      end
+
+      def execute!
+        Exec.execv("/bin/bash", "-l", "-c", "git checkout -b #{story_branch_name}")
+      end
+
+      def story_branch_name
+        [@story_id, @branch_name].join('--')
+      end
+    end
   end
 end
 
@@ -180,10 +197,13 @@ def __main__(argv)
     Piv::Command::Started.new(argv[2..-1]).run!
   when 'show'
     Piv::Command::Show.new(argv[2..-1]).run!
+  when 'branch'
+    Piv::Command::Branch.new(argv[2..-1]).run!
   else
     config = Piv::Config.new
     config.save!
     client = Piv::PivotalTrackerApiClient.new(config['project_id'], config['token'])
     p client.me
+    Exec.execv("/bin/bash", "-l", "-c", "echo Hello exec")
   end
 end
