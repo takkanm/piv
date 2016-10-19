@@ -166,6 +166,14 @@ module Piv
         puts story['name']
         puts story['description']
       end
+
+      def help_text
+        <<-EOS
+  usage: piv show STORY_ID
+
+  Show story name and description.
+        EOS
+      end
     end
 
     class Branch < Base
@@ -182,6 +190,14 @@ module Piv
 
       def story_branch_name
         [@story_id, @branch_name].join('--')
+      end
+
+      def help_text
+        <<-EOS
+  usage: piv branch STORY_ID BRANCH_NAME
+
+  create git branch with story_id
+        EOS
       end
     end
   end
