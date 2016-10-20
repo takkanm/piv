@@ -1,4 +1,3 @@
-
 def __main__(argv)
   case argv[1]
   when 'version'
