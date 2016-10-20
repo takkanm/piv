@@ -12,10 +12,20 @@ def __main__(argv)
   when 'open'
     Piv::Command::Open.new(argv[2..-1]).run!
   else
-    config = Piv::Config.new
-    config.save!
-    client = Piv::PivotalTrackerApiClient.new(config['project_id'], config['token'])
-    p client.me
-    Exec.execv("/bin/bash", "-l", "-c", "echo Hello exec")
+    puts <<-EOS
+usage: piv sub_commands
+
+piv is PivotalTracker client command.
+
+sub_commands:
+  version: show version
+  init:    initialize configuration
+  started: show started stories
+  show:    show story infomation
+  open:    open page
+
+options:
+  --help show help message
+    EOS
   end
 end
