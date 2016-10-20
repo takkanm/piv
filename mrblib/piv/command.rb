@@ -29,8 +29,11 @@ module Piv
       def client
         return @client if @client
 
-        config  = Piv::Config.new
         @client = PivotalTrackerApiClient.new(config['project_id'], config['token'])
+      end
+
+      def config
+        @config ||= Piv::Config.new
       end
     end
 
@@ -114,15 +117,20 @@ module Piv
       end
 
       def execute!
-        story_url = "https://www.pivotaltracker.com/story/show/#{@story_id}"
-        Exec.execv("/bin/bash", "-l", "-c", "open #{story_url}")
+        open_url = if @sotry_id
+          "https://www.pivotaltracker.com/story/show/#{@story_id}"
+        else
+          "https://www.pivotaltracker.com/n/projects/#{config['project_id']}"
+        end
+
+        Exec.execv("/bin/bash", "-l", "-c", "open #{open_url}")
       end
 
       def help_text
         <<-EOS
-  usage: piv open STORY_ID
+  usage: piv open [STORY_ID]
 
-  Open story page.
+  Open project page. If STORY_ID is supplied, open story page.
         EOS
       end
     end
