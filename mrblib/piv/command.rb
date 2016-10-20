@@ -107,6 +107,26 @@ module Piv
       end
     end
 
+    class Open < Base
+      def initialize(args)
+        super
+        @story_id = args[0]
+      end
+
+      def execute!
+        story_url = "https://www.pivotaltracker.com/story/show/#{@story_id}"
+        Exec.execv("/bin/bash", "-l", "-c", "open #{story_url}")
+      end
+
+      def help_text
+        <<-EOS
+  usage: piv open STORY_ID
+
+  Open story page.
+        EOS
+      end
+    end
+
     class Branch < Base
       def initialize(args)
         @story_id    = args[0]
