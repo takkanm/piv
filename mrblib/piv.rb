@@ -9,8 +9,6 @@ def __main__(argv)
     Piv::Command::Started.new(argv[2..-1]).run!
   when 'show'
     Piv::Command::Show.new(argv[2..-1]).run!
-  when 'branch'
-    Piv::Command::Branch.new(argv[2..-1]).run!
   when 'open'
     Piv::Command::Open.new(argv[2..-1]).run!
   else

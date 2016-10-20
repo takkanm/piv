@@ -134,30 +134,5 @@ module Piv
         EOS
       end
     end
-
-    class Branch < Base
-      def initialize(args)
-        @story_id    = args[0]
-        @branch_name = args[1]
-
-        super(args)
-      end
-
-      def execute!
-        Exec.execv("/bin/bash", "-l", "-c", "git checkout -b #{story_branch_name}")
-      end
-
-      def story_branch_name
-        [@story_id, @branch_name].join('--')
-      end
-
-      def help_text
-        <<-EOS
-  usage: piv branch STORY_ID BRANCH_NAME
-
-  create git branch with story_id
-        EOS
-      end
-    end
   end
 end
