@@ -97,8 +97,16 @@ module Piv
     class Show < Base
       def execute!
         story = JSON.parse(client.story(@args[0]))
-        puts story['name']
-        puts story['description']
+
+        puts <<-STORY
+Story Id    : #{story['id']}
+Title       : #{story['name']}
+Estimate    : #{story['estimate']}
+Story Type  : #{story['story_type']}
+Description :
+
+#{story['description']}
+        STORY
       end
 
       def help_text
