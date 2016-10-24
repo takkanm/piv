@@ -22,7 +22,6 @@ sub_commands:
 
 options:
   --help show help message
-    EOS
 ```
 
 ## License
