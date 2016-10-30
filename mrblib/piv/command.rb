@@ -118,6 +118,20 @@ Description :
       end
     end
 
+    class Finish < Base
+      def execute!
+        JSON.parse(client.finish(@args[0]))
+      end
+
+      def help_text
+        <<-EOS
+  usage: piv finish STORY_ID
+
+  Story finished.
+        EOS
+      end
+    end
+
     class Open < Base
       def initialize(args)
         super
