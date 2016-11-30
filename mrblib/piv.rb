@@ -10,6 +10,8 @@ def __main__(argv)
     Piv::Command::Show.new(argv[2..-1]).run!
   when 'open'
     Piv::Command::Open.new(argv[2..-1]).run!
+  when 'finish'
+    Piv::Command::Finish.new(argv[2..-1]).run!
   else
     puts <<-EOS
 usage: piv sub_commands
@@ -21,6 +23,7 @@ sub_commands:
   init:    initialize configuration
   started: show started stories
   show:    show story infomation
+  finish:  finsh story
   open:    open page
 
 options:

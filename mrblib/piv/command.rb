@@ -118,6 +118,33 @@ Description :
       end
     end
 
+    class Finish < Base
+      def execute!
+        if current_status_is_started?
+          finish!
+        else
+          puts "#{@args[0]} status is not 'started'"
+        end
+      end
+
+      def current_status_is_started?
+        story = JSON.parse(client.story(@args[0]))
+        story['current_state'] == 'started'
+      end
+
+      def finish!
+        JSON.parse(client.finish(@args[0]))
+      end
+
+      def help_text
+        <<-EOS
+  usage: piv finish STORY_ID
+
+  Story finished.
+        EOS
+      end
+    end
+
     class Open < Base
       def initialize(args)
         super
