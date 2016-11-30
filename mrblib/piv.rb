@@ -10,8 +10,13 @@ def __main__(argv)
     Piv::Command::Show.new(argv[2..-1]).run!
   when 'open'
     Piv::Command::Open.new(argv[2..-1]).run!
+<<<<<<< Updated upstream
   when 'finish'
     Piv::Command::Finish.new(argv[2..-1]).run!
+=======
+  when 'current_iteration'
+    Piv::Command::CurrentIteration.new(argv[2..-1]).run!
+>>>>>>> Stashed changes
   else
     puts <<-EOS
 usage: piv sub_commands
@@ -19,12 +24,13 @@ usage: piv sub_commands
 piv is PivotalTracker client command.
 
 sub_commands:
-  version: show version
-  init:    initialize configuration
-  started: show started stories
-  show:    show story infomation
-  finish:  finsh story
-  open:    open page
+  version:           show version
+  init:              initialize configuration
+  started:           show started stories
+  show:              show story infomation
+  finish:            finsh story
+  open:              open page
+  current_iteration: show current iteration stories
 
 options:
   --help show help message

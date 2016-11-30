@@ -169,5 +169,33 @@ Description :
         EOS
       end
     end
+
+    class CurrentIteration < Base
+      def execute!
+        JSON.parse(client.current_iteration)[0]['stories'].each do |story|
+          puts "#{('%12d' % story['id'])} : #{story['name']} <#{story['current_state']}> [#{member_names(story['owner_ids']).join(',')}]"
+        end
+      end
+
+      def member_names(owner_ids)
+        owner_ids.map do |owner_id|
+          owner = memberships.find { |o| o['person']['id'] == owner_id }
+
+          owner['person']['username']
+        end
+      end
+
+      def memberships
+        @memberships ||= JSON.parse(@client.memberships)
+      end
+
+      def help_text
+        <<-EOS
+  usage: piv current_iteration
+
+  Show current iteration stories.
+        EOS
+      end
+    end
   end
 end
