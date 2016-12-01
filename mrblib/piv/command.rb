@@ -171,9 +171,17 @@ Description :
     end
 
     class CurrentIteration < Base
+      def parse_option(args)
+        @md_format = args.any? {|arg| arg == '--md-format' }
+      end
+
       def execute!
         JSON.parse(client.current_iteration)[0]['stories'].each do |story|
-          puts "#{('%12d' % story['id'])} : #{story['name']} <#{story['current_state']}> [#{member_names(story['owner_ids']).join(',')}]"
+          if @md_format
+            puts "[#{story['name']}](https://www.pivotaltracker.com/story/show/#{story['id']})"
+          else
+            puts "#{('%12d' % story['id'])} : #{story['name']} <#{story['current_state']}> [#{member_names(story['owner_ids']).join(',')}]"
+          end
         end
       end
 
