@@ -10,13 +10,10 @@ def __main__(argv)
     Piv::Command::Show.new(argv[2..-1]).run!
   when 'open'
     Piv::Command::Open.new(argv[2..-1]).run!
-<<<<<<< Updated upstream
   when 'finish'
     Piv::Command::Finish.new(argv[2..-1]).run!
-=======
   when 'current_iteration'
     Piv::Command::CurrentIteration.new(argv[2..-1]).run!
->>>>>>> Stashed changes
   else
     puts <<-EOS
 usage: piv sub_commands
