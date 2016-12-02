@@ -36,6 +36,10 @@ module Piv
       )
     end
 
+    def current_iteration
+      get("/projects/#{@project_id}/iterations?scope=current")
+    end
+
     def get(path, header = {})
       client.request('GET', [PATH_BASE, path].join('/'), header.merge(default_header)).body
     end
