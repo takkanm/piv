@@ -199,9 +199,11 @@ Description :
 
       def help_text
         <<-EOS
-  usage: piv current_iteration
+  usage: piv current_iteration [--md-format]
 
   Show current iteration stories.
+
+    --md-format : show current iteration stories at markdown style link
         EOS
       end
     end
