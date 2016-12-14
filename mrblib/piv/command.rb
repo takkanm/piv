@@ -173,10 +173,16 @@ Description :
     class CurrentIteration < Base
       def parse_option(args)
         @md_format = args.any? {|arg| arg == '--md-format' }
+        @ignore_states = []
+        args.each_with_index {|arg, index|
+          next unless arg == '--ignore-states'
+          @ignore_states = args[index + 1].split(',')
+        }
       end
 
       def execute!
         JSON.parse(client.current_iteration)[0]['stories'].each do |story|
+          next if @ignore_states.include?(story['current_state'])
           if @md_format
             puts "[#{story['name']}](https://www.pivotaltracker.com/story/show/#{story['id']}) <#{story['current_state']}> [#{member_names(story['owner_ids']).join(',')}]"
           else
@@ -199,11 +205,12 @@ Description :
 
       def help_text
         <<-EOS
-  usage: piv current_iteration [--md-format]
+  usage: piv current_iteration [--md-format] [--ignore-states state1[,state2...]
 
   Show current iteration stories.
 
-    --md-format : show current iteration stories at markdown style link
+    --md-format     : show current iteration stories at markdown style link
+    --ignore-states : set ignore story states
         EOS
       end
     end
